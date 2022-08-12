@@ -1,7 +1,20 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 
-export default function Me() {
-  return (
-    <div>Me</div>
-  )
-}
+const Me = () => {
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        fetch('localhost:1337')
+            .then(res => res.json())
+            .then(res => setMessage(res.description));
+    });
+
+    return (
+        <main>
+            <h1>Me</h1>
+            <p>{message}</p>
+        </main>
+    );
+};
+
+export default Me;

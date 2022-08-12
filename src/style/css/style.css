@@ -37,3 +37,17 @@ a, a:visited {
 .nav .active {
     text-decoration: underline;
 }
+
+.container {
+    margin: auto;
+    padding: 30px;
+    width: 80vw;
+    height: 100vh;
+}
+
+.textEditor {
+    border: 1px solid black;
+    padding: 0.5em;
+    margin-top: 1rem;
+    min-height: 200px;
+}
