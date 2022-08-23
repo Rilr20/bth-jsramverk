@@ -12,6 +12,7 @@ const Me = () => {
     return (
         <main>
             <h1>Me</h1>
+            <h2>Rikard Larsson</h2>
             <p>{message}</p>
         </main>
     );
