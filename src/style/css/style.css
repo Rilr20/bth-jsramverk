@@ -90,3 +90,12 @@ button:hover,
     /* margin-left: 10px; */
     /* margin-right: 10px; */
 }
+
+.document-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 300px;
+}
+.document-list button {
+    margin: 0.2em;
+}
