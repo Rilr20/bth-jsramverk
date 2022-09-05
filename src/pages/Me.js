@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-
 const Me = () => {
     const [message, setMessage] = useState('');
 
     useEffect(() => {
-        fetch('localhost:1337')
-            .then(res => res.json())
-            .then(res => setMessage(res.description));
+        const fetchData = () => {
+            return fetch("https://jsramverk-editor-rilr20a.azurewebsites.net/me")
+                .then((response) => response.json())
+                .then((data) => setMessage(data.data.msg));
+        }
+        fetchData()
     });
-
     return (
         <main>
             <h1>Me</h1>
