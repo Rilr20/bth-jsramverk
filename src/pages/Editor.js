@@ -39,17 +39,20 @@ export default function Editor() {
             console.log("wow new file");
         } else {
             //spara över gammal
-            let documentFromId = findId(documentId)
-            title = documentFromId.title
+            // let documentFromId = findId(documentId)
+            // title = documentFromId.title
+            title = fileNameInput.value
 
-            let data = { title, text }
+            console.log(documentId);
+            let data = { title: title, text: text, id: documentId }
+            console.log(data);
             let requestOptions = {
-                method: "POST",
+                method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             }
 
-            fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/docs', requestOptions)
+            fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${documentId}`, requestOptions)
                 .then(repsonse => repsonse.json())
                 .then(res => console.log(res))
 
