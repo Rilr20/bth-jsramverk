@@ -17,7 +17,7 @@ export default function Editor() {
         }
         fetchData()
     }, []);
-    function saveFile() {
+    async function saveFile() {
         console.log(editor[0].innerText)
         let text = editor[0].innerText
         let title
@@ -32,9 +32,14 @@ export default function Editor() {
                 body: JSON.stringify(data)
             }
 
-            fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/docs', requestOptions)
-            .then(repsonse => repsonse.json())
-            .then(res => console.log(res))
+            const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/docs', requestOptions)
+            const body = await response.text()
+            console.log(body)
+            if (response.status === 201) window.location.reload()
+            else if (response.status !== 201) throw Error(body.message)
+            // .then(repsonse => repsonse.json())
+            // .then(res => console.log(res))
+            // .then(window.location.reload())
 
             console.log("wow new file");
         } else {
@@ -52,11 +57,15 @@ export default function Editor() {
                 body: JSON.stringify(data)
             }
 
-            fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${documentId}`, requestOptions)
-                .then(repsonse => repsonse.json())
-                .then(res => console.log(res))
-
-                console.log("old file time to rewrite");
+            const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${documentId}`, requestOptions)
+                // .then(repsonse => repsonse.json())
+                // .then(res => console.log(res))
+                // .then(window.location.reload())
+            const body = await response.text()
+            console.log(body)
+            if (response.status === 204) window.location.reload()
+            else if(response.status !== 204) throw Error(body.message)
+                // console.log("old file time to rewrite");
         }
     }
     function findId(id) {
@@ -73,9 +82,9 @@ export default function Editor() {
         let documenter = findId(documentId)
         console.log(documenter);
         try {
-            fileNameInput.value = documenter.title 
+            fileNameInput.value = documenter.title
             editor[0].innerText = documenter.text
-            
+
         } catch (error) {
             fileNameInput.value = null
             editor[0].innerText = null
