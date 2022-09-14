@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { TrixEditor } from "react-trix";
 import "trix/dist/trix";
+import { fetchData } from '../components/editorData';
 
 export default function Editor() {
     const [documentId, setDocumentId] = useState(null);
@@ -10,12 +11,8 @@ export default function Editor() {
     useEffect(() => {
         setFileNameInput(document.getElementById('filename'))
         console.log(fileNameInput);
-        const fetchData = () => {
-            return fetch("https://jsramverk-editor-rilr20a.azurewebsites.net/docs")
-                .then((response) => response.json())
-                .then((data) => (setDocuments(data)));
-        }
-        fetchData()
+
+        fetchData(setDocuments)
     }, []);
     async function saveFile() {
         console.log(editor[0].innerText)
@@ -104,7 +101,7 @@ export default function Editor() {
             </div>
             <div className='toolbar'>
                 <h2>Documents</h2>
-                <div className='document-list'>
+                <div data-testid="document-list" className='document-list'>
                     <button onClick={() => { changeTextEditor(null) }}>New Document</button>
                     {
                         documents.map((document) => {
