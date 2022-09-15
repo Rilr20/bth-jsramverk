@@ -103,8 +103,23 @@ a:visited {
   text-decoration: underline;
 }
 
+.trix-button-group button {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border: 10px solid gray;
+}
+
+#trix-toolbar-1 span button {
+  border: 1px solid #1a1a1a;
+  background-color: gray;
+}
+
 .textEditor {
-  background-color: olive;
+  margin-top: 0px;
+}
+
+.textEditor {
+  background-color: whitesmoke;
 }
 
 .container {
