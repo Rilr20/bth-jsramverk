@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { render, screen, cleanup } from '@testing-library/react'
 import Editor from '../Editor'
 
