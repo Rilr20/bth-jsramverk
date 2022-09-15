@@ -68,7 +68,7 @@ export default function Editor() {
         });
         return returnValue
     }
-    function changeTextEditor(documentId) {
+    function changeDocument(documentId) {
         setDocumentId(documentId);
         let documenter = findId(documentId)
         console.log(documenter);
@@ -96,17 +96,17 @@ export default function Editor() {
             <div className='toolbar'>
                 <h2>Documents</h2>
                 <div className='document-list'>
-                    <button onClick={() => { changeTextEditor(null) }}>New Document</button>
+                    <button onClick={() => { changeDocument(null) }}>New Document</button>
                     {
                         documents.map((document) => {
-                            return <button key={document._id} onClick={() => { changeTextEditor(document._id) }}>{document.title}</button>
+                            return <button key={document._id} onClick={() => { changeDocument(document._id) }}>{document.title}</button>
                         })
                     }
                 </div>
             </div>
 
             <p>Document id: {documentId === null ? "New File" : documentId}</p>
-            <TrixEditor className='textEditor' />
+            <TrixEditor className='textEditor' placeholder='Dags att börja skriva' />
         </div>
     );
 }
