@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { TrixEditor } from "react-trix";
 import "trix/dist/trix";
 import { fetchData } from '../components/editorData';
+import { findId } from '../components/EditorHelper';
 
 export default function Editor() {
     const [documentId, setDocumentId] = useState(null);
@@ -65,18 +66,10 @@ export default function Editor() {
                 // console.log("old file time to rewrite");
         }
     }
-    function findId(id) {
-        let returnValue = null
-        documents.forEach(document => {
-            if (document._id === id) {
-                returnValue = document
-            }
-        });
-        return returnValue
-    }
+
     function changeTextEditor(documentId) {
         setDocumentId(documentId);
-        let documenter = findId(documentId)
+        let documenter = findId(documents, documentId)
         console.log(documenter);
         try {
             fileNameInput.value = documenter.title
@@ -101,8 +94,8 @@ export default function Editor() {
             </div>
             <div className='toolbar'>
                 <h2>Documents</h2>
-                <div data-testid="document-list" className='document-list'>
-                    <button onClick={() => { changeTextEditor(null) }}>New Document</button>
+                <div className='document-list'>
+                    <button data-testid="new-document-btn"  onClick={() => { changeTextEditor(null) }}>New Document</button>
                     {
                         documents.map((document) => {
                             return <button key={document._id} onClick={() => { changeTextEditor(document._id) }}>{document.title}</button>
@@ -112,7 +105,7 @@ export default function Editor() {
             </div>
 
             <p>Document id: {documentId === null ? "New File" : documentId}</p>
-            <TrixEditor className='textEditor' />
+            <TrixEditor className='textEditor'  />
         </div>
     );
 }
