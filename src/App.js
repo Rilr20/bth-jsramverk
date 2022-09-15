@@ -11,7 +11,7 @@ function App() {
     return (
         <>
             <Navbar />
-            <div className="container">
+            <div className="wrapper">
                 <Routes>
                     <Route path="/" element={<Editor />}></Route>
                     <Route path="/me" element={<Me />}></Route>
