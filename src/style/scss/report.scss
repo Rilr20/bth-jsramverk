@@ -1,0 +1,23 @@
+.report-buttons {
+    margin: auto;
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.report-button {
+    width: 80px;
+    /* margin-left: 10px; */
+    /* margin-right: 10px; */
+    padding: 2px;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    display: inline-block;
+    background-color: $purplenavy;
+}
+
+.report-button:hover {
+    background-color: $purplemajesty;
+}

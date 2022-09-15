@@ -1,5 +1,5 @@
 .nav {
-    background-color: lightblue;
+    background-color: $dodgerblue;
     display: flex;
     padding: 1rem;
     font-size: 2rem;
@@ -34,4 +34,10 @@ a:visited {
 
 .nav .active {
     text-decoration: underline;
+}
+
+@media (max-width: 980px) {
+    .link {
+        margin: 10px;
+    }
 }

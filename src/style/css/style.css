@@ -4,43 +4,8 @@
   box-sizing: border-box;
 }
 
-.container {
-  margin: auto;
-  padding: 30px;
-  width: 80vw;
-  height: 100vh;
-}
-
-.textEditor {
-  border: 1px solid black;
-  padding: 0.5em;
-  margin-top: 1rem;
-  min-height: 200px;
-}
-
-.toolbar {
-  margin-bottom: 15px;
-  margin-top: 15px;
-}
-
-.toolbar ul {
-  margin-top: 15px;
-}
-
-button,
-#trix-toolbar-1 span button {
-  background-color: #4CAF50;
-  padding: 2px;
-  border: none;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-}
-
-button:hover,
-#trix-toolbar-1 span button:hover {
-  background-color: #439946;
+body {
+  background-color: #F1EDEE;
 }
 
 .report-buttons {
@@ -54,20 +19,21 @@ button:hover,
   width: 80px;
   /* margin-left: 10px; */
   /* margin-right: 10px; */
+  padding: 2px;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  display: inline-block;
+  background-color: #5E548E;
 }
 
-.document-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  width: 300px;
-}
-
-.document-list button {
-  margin: 0.2em;
+.report-button:hover {
+  background-color: #9F86C0;
 }
 
 .nav {
-  background-color: lightblue;
+  background-color: #1098F7;
   display: flex;
   padding: 1rem;
   font-size: 2rem;
@@ -103,39 +69,20 @@ a:visited {
   text-decoration: underline;
 }
 
-.trix-button-group button {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  border: 10px solid gray;
+@media (max-width: 980px) {
+  .link {
+    margin: 10px;
+  }
 }
-
-#trix-toolbar-1 span button {
-  border: 1px solid #1a1a1a;
-  background-color: gray;
-}
-
-.textEditor {
-  margin-top: 0px;
-}
-
-.textEditor {
-  background-color: whitesmoke;
-}
-
-.container {
-  background-color: chocolate;
-}
-
 .toolbar {
-  background-color: aquamarine;
+  margin-bottom: 15px;
+  margin-top: 15px;
   padding-bottom: 0.2em;
   padding-top: 0.2em;
 }
-.toolbar h2 {
-  text-align: center;
-}
 .toolbar .tools {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
 }
 .toolbar .tools .filename {
@@ -146,9 +93,12 @@ a:visited {
   width: 150px;
 }
 
+.document-list:nth-child(2) {
+  margin-left: -5px;
+}
+
 .new-document {
   width: 150px;
-  background-color: darkcyan;
 }
 
 .dropdown-documents {
@@ -156,11 +106,134 @@ a:visited {
 }
 
 .dropdown-existing-document {
-  background-color: darkorchid;
+  background-color: darkorchidk;
+}
+
+@media (max-width: 980px) {
+  .dropdown-documents {
+    width: 150px;
+  }
+  .toolbar {
+    flex-direction: row;
+  }
+  .trix-button-row {
+    display: flex;
+    flex-direction: column;
+  }
+  .trix-button-row .trix-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.2em;
+  }
+  .trix-button-row .trix-button-group:not(:last-child) button {
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+    margin: 2px 2px 0px 2px;
+  }
+}
+.textEditor {
+  border: 1px solid black;
+  padding: 0.5em;
+  margin-top: 1rem;
+  min-height: 200px;
+  background-color: whitesmoke;
+}
+
+.textEditor:focus {
+  border-color: #231942;
+  outline: 0;
+}
+
+.trix-button-group button {
+  padding: 0.2em;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border: 1px solid #231942;
+}
+
+#trix-toolbar-1 span button {
+  border-left: 1px solid #9F86C0;
+  border-right: 1px solid #9F86C0;
+  border-top: 1px solid #9F86C0;
+  background-color: #5E548E;
+}
+
+.textEditor {
+  margin-top: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.document-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 300px;
+}
+
+.document-list button {
+  margin: 0.2em;
+}
+
+.filename-btn,
+.new-document,
+#trix-toolbar-1 span button {
+  padding: 2px;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+#trix-toolbar-1 span button:hover {
+  background-color: #9F86C0;
+}
+
+.filename-btn,
+.new-document {
+  background-color: #5E548E;
+  border: none;
+  color: white;
+}
+
+.filename-btn:hover,
+.new-document:hover,
+#trix-toolbar-1 span button:hover {
+  background-color: #9F86C0;
+}
+
+@media (max-width: 980px) {
+  .trix-button-row {
+    display: flex;
+    flex-direction: column;
+  }
+  .trix-button-row .trix-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.2em;
+  }
+  .trix-button-row .trix-button-group:not(:last-child) button {
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+    margin: 2px 2px 0px 2px;
+  }
+}
+.container {
+  margin: auto;
+  padding: 30px;
+  width: 80vw;
+  height: 100vh;
 }
 
 .wrapper {
   width: 90%;
-  background-color: orchid;
   margin: auto;
+}
+
+@media (max-width: 980px) {
+  .wrapper {
+    width: 100%;
+  }
+  .container {
+    width: 100%;
+  }
 }
