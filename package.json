@@ -18,6 +18,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "style": "sass src/style/scss/style.scss src/style/css/style.css --no-source-map --watch",
     "eject": "react-scripts eject",
     "deploy": "npm run build && rsync -av --delete build/ rilr20@ssh.student.bth.se:www/editor"
   },
