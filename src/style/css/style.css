@@ -93,10 +93,6 @@ a:visited {
   width: 150px;
 }
 
-.document-list:nth-child(2) {
-  margin-left: -5px;
-}
-
 .new-document {
   width: 150px;
 }
