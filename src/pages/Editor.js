@@ -90,7 +90,7 @@ export default function Editor() {
     return (
         <div className='container'>
             <div className='toolbar'>
-                <h2>Toolbar </h2>
+                {/* <h2>Toolbar </h2> */}
                 <div className='tools'>
                     <div className='document-list'>
                         <input className='filename' id="filename" placeholder='filename'></input>

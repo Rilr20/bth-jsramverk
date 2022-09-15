@@ -113,9 +113,8 @@ a:visited {
 
 .toolbar {
   background-color: aquamarine;
-  display: grid;
-  grid-template-rows: 1fr 1fr;
   padding-bottom: 0.2em;
+  padding-top: 0.2em;
 }
 .toolbar h2 {
   text-align: center;
