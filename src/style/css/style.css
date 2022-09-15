@@ -1,101 +1,152 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.nav {
-    background-color: lightblue;
-    display: flex;
-    padding: 1rem;
-    font-size: 2rem;
-}
-
-.nav a {
-    text-decoration: none;
-}
-
-.title {
-    width: 20%;
-    text-align: center;
-}
-
-.links {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 30%;
-    text-align: center;
-}
-
-.link {
-    display: block;
-}
-
-a,
-a:visited {
-    color: black;
-}
-
-.nav .active {
-    text-decoration: underline;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .container {
-    margin: auto;
-    padding: 30px;
-    width: 80vw;
-    height: 100vh;
+  margin: auto;
+  padding: 30px;
+  width: 80vw;
+  height: 100vh;
 }
 
 .textEditor {
-    border: 1px solid black;
-    padding: 0.5em;
-    margin-top: 1rem;
-    min-height: 200px;
+  border: 1px solid black;
+  padding: 0.5em;
+  margin-top: 1rem;
+  min-height: 200px;
 }
 
 .toolbar {
-    margin-bottom: 15px;
-    margin-top: 15px;
+  margin-bottom: 15px;
+  margin-top: 15px;
 }
 
 .toolbar ul {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 button,
 #trix-toolbar-1 span button {
-    background-color: #4CAF50;
-    padding: 2px;
-    border: none;
-    color: white;
-    text-align: center; 
-    text-decoration: none;
-    display: inline-block;
+  background-color: #4CAF50;
+  padding: 2px;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
 }
+
 button:hover,
 #trix-toolbar-1 span button:hover {
-    background-color: #439946;
+  background-color: #439946;
 }
 
 .report-buttons {
-    margin: auto;
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
+  margin: auto;
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
 }
+
 .report-button {
-    width: 80px;
-    /* margin-left: 10px; */
-    /* margin-right: 10px; */
+  width: 80px;
+  /* margin-left: 10px; */
+  /* margin-right: 10px; */
 }
 
 .document-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    width: 300px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 300px;
 }
+
 .document-list button {
-    margin: 0.2em;
+  margin: 0.2em;
+}
+
+.nav {
+  background-color: lightblue;
+  display: flex;
+  padding: 1rem;
+  font-size: 2rem;
+}
+
+.nav a {
+  text-decoration: none;
+}
+
+.title {
+  width: 20%;
+  text-align: center;
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 30%;
+  text-align: center;
+}
+
+.link {
+  display: block;
+}
+
+a,
+a:visited {
+  color: black;
+}
+
+.nav .active {
+  text-decoration: underline;
+}
+
+.textEditor {
+  background-color: olive;
+}
+
+.container {
+  background-color: chocolate;
+}
+
+.toolbar {
+  background-color: aquamarine;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  padding-bottom: 0.2em;
+}
+.toolbar h2 {
+  text-align: center;
+}
+.toolbar .tools {
+  display: flex;
+  justify-content: space-around;
+}
+.toolbar .tools .filename {
+  width: 150px;
+}
+.toolbar .tools .filename-btn {
+  margin: 0.2em;
+  width: 150px;
+}
+
+.new-document {
+  width: 150px;
+  background-color: darkcyan;
+}
+
+.dropdown-documents {
+  width: 200px;
+}
+
+.dropdown-existing-document {
+  background-color: darkorchid;
+}
+
+.wrapper {
+  width: 90%;
+  background-color: orchid;
+  margin: auto;
 }
