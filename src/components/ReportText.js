@@ -12,11 +12,11 @@ export default function ReportText(props) {
         { title: "Report 10", text: ["detta är report 10"] },
     ]
     return (
-        <div>
+        <div data-testid="reporttext">
             <h2>{text[props.num].title}</h2>
             {
-                text[props.num].text.map((paragraph) => {
-                    return <p>{paragraph}</p>
+                text[props.num].text.map((paragraph,num) => {
+                    return <p key={num}>{paragraph}</p>
                 })
             }
         </div>
