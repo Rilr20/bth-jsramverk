@@ -90,7 +90,7 @@ export default function Editor() {
                         <button className='filename-btn' onClick={saveFile}>Save</button>
                     </div>
                     <div data-testid="document-list" className='document-list'>
-                        <button className='new-document' onClick={() => { changeDocument(null) }}>New Document</button>
+                        
                         <select className='dropdown-documents'>
                             <option autoFocus>Switch Between Documents</option>
                             {
@@ -99,6 +99,7 @@ export default function Editor() {
                                 })
                             }
                         </select>
+                        <button className='new-document' onClick={() => { changeDocument(null) }}>New Document</button>
                     </div>
                 </div>
             </div>
