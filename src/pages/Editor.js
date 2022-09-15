@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { TrixEditor } from "react-trix";
 import "trix/dist/trix";
+import "trix/dist/trix.css";
 import { fetchData } from '../components/editorData';
 import { findId } from '../components/EditorHelper';
 
