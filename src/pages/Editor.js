@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { TrixEditor } from "react-trix";
 import "trix/dist/trix";
 import { fetchData } from '../components/editorData';
+import { findId } from '../components/EditorHelper';
 
 export default function Editor() {
     const [documentId, setDocumentId] = useState(null);
@@ -65,18 +66,10 @@ export default function Editor() {
             // console.log("old file time to rewrite");
         }
     }
-    function findId(id) {
-        let returnValue = null
-        documents.forEach(document => {
-            if (document._id === id) {
-                returnValue = document
-            }
-        });
-        return returnValue
-    }
+
     function changeDocument(documentId) {
         setDocumentId(documentId);
-        let documenter = findId(documentId)
+        let documenter = findId(documents, documentId)
         console.log(documenter);
         try {
             fileNameInput.value = documenter.title
