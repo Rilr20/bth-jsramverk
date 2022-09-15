@@ -14,7 +14,7 @@ afterEach(() => {
 // ]
 // const fetchData = () => false;
 
-test('Document button', async () => {
+test('User can see document button', async () => {
     render(<Editor />)
     const documentList = screen.getByTestId('document-list');
     expect(documentList).toHaveTextContent('New Document')
