@@ -13,8 +13,10 @@ export default function Editor() {
     useEffect(() => {
         setFileNameInput(document.getElementById('filename'))
         console.log(fileNameInput);
-
-        fetchData(setDocuments)
+        // if (documents === []) {
+            console.log("run");
+            fetchData(setDocuments)
+        // }
     }, []);
     async function saveFile() {
         console.log(editor[0].innerText)
@@ -81,6 +83,7 @@ export default function Editor() {
             editor[0].innerText = null
         }
     }
+    // console.log(documents.data);
     return (
         <div className='container'>
             <div className='toolbar'>
