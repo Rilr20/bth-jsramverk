@@ -4,27 +4,29 @@ import "trix/dist/trix";
 import "trix/dist/trix.css";
 import { fetchData } from '../components/editorData';
 import { findId } from '../components/EditorHelper';
+import socketIOClient from "socket.io-client";
+
 
 export default function Editor() {
-    const [documentId, setDocumentId] = useState(null);
     const [documents, setDocuments] = useState([]);
     const editor = document.getElementsByClassName('textEditor')
-    const [fileNameInput, setFileNameInput] = useState(document.getElementById('filename'))
+    const fileNameInput = document.getElementById('filename')
+    const [formInput, updateFormInput] = useState({_id:null, title: '', text: '' })
     useEffect(() => {
-        setFileNameInput(document.getElementById('filename'))
-        console.log(fileNameInput);
-        // if (documents === []) {
+        if (documents.length === 0) {
             console.log("run");
             fetchData(setDocuments)
-        // }
+        }
     }, []);
+    /**
+     * Saves a new file or to an existing one
+     */
     async function saveFile() {
         console.log(editor[0].innerText)
-        let text = editor[0].innerText
-        let title
-        if (documentId === null) {
+        let text = formInput.text
+        let title = formInput.title
+        if (formInput._id === null) {
             //spara ny fil
-            title = fileNameInput.value
 
             let data = { title, text }
             let requestOptions = {
@@ -35,22 +37,16 @@ export default function Editor() {
 
             const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/docs', requestOptions)
             const body = await response.text()
-            console.log(body)
+
             if (response.status === 201) window.location.reload()
             else if (response.status !== 201) throw Error(body.message)
-            // .then(repsonse => repsonse.json())
-            // .then(res => console.log(res))
-            // .then(window.location.reload())
 
             console.log("wow new file");
         } else {
             //spara över gammal
-            // let documentFromId = findId(documentId)
-            // title = documentFromId.title
-            title = fileNameInput.value
 
-            console.log(documentId);
-            let data = { title: title, text: text, id: documentId }
+            console.log(formInput._id);
+            let data = { title: title, text: text, id: formInput._id }
             console.log(data);
             let requestOptions = {
                 method: "PUT",
@@ -58,39 +54,46 @@ export default function Editor() {
                 body: JSON.stringify(data)
             }
 
-            const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${documentId}`, requestOptions)
-            // .then(repsonse => repsonse.json())
-            // .then(res => console.log(res))
-            // .then(window.location.reload())
+            const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${formInput._id}`, requestOptions)
             const body = await response.text()
-            console.log(body)
+
             if (response.status === 204) window.location.reload()
             else if (response.status !== 204) throw Error(body.message)
-            // console.log("old file time to rewrite");
         }
     }
-
+    /**
+     * fetches a document with the id, and updates form and UI 
+     * @param {string} documentId 
+     */
     function changeDocument(documentId) {
-        setDocumentId(documentId);
-        let documenter = findId(documents, documentId)
-        console.log(documenter);
+        updateFormInput({...formInput, id: documentId})
+        let document = findId(documents, documentId)
         try {
-            fileNameInput.value = documenter.title
-            editor[0].innerText = documenter.text
+            updateFormInput({...document})
+            console.log(fileNameInput);
+            fileNameInput.value = document.title
+            editor[0].innerText = document.text
 
         } catch (error) {
             fileNameInput.value = null
             editor[0].innerText = null
         }
     }
-    // console.log(documents.data);
+    /**
+     * changes the text in formInput
+     * @param {string} html 
+     * @param {string} text 
+     */
+    function handleChange(html, text) {
+        updateFormInput({ ...formInput, text: text })
+    }
+
     return (
         <div className='container'>
             <div className='toolbar'>
-                {/* <h2>Toolbar </h2> */}
                 <div className='tools'>
                     <div className='document-list'>
-                        <input className='filename' id="filename" placeholder='filename'></input>
+                        <input className='filename' id="filename" placeholder='title' name="title" onChange={(e) => { updateFormInput({ ...formInput, title: e.target.value })}}></input>
                         <button className='filename-btn' onClick={saveFile}>Save</button>
                     </div>
                     <div data-testid="document-list" className='document-list'>
@@ -108,8 +111,10 @@ export default function Editor() {
                 </div>
             </div>
 
-            <TrixEditor className='textEditor' placeholder='Dags att börja skriva' />
-            <p>Document id: {documentId === null ? "New File" : documentId}</p>
+            <TrixEditor onChange={handleChange} name="text" className='textEditor' placeholder='Dags att börja skriva' />
+            <p>Document id: {formInput._id === null ? "New File" : formInput._id}</p>
+            <p>text:{formInput.text}</p>
+            <p>title:{formInput.title}</p>
         </div>
     );
 }
