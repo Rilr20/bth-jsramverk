@@ -4,18 +4,30 @@ import "trix/dist/trix";
 import "trix/dist/trix.css";
 import { fetchData } from '../components/editorData';
 import { findId } from '../components/EditorHelper';
-import socketIOClient from "socket.io-client";
+import { io } from "socket.io-client";
 
+let sendToSocket = false;
 
 export default function Editor() {
     const [documents, setDocuments] = useState([]);
     const editor = document.getElementsByClassName('textEditor')
     const fileNameInput = document.getElementById('filename')
     const [formInput, updateFormInput] = useState({_id:null, title: '', text: '' })
+    const [socket, setSocket] = useState(null);
+
     useEffect(() => {
         if (documents.length === 0) {
             console.log("run");
             fetchData(setDocuments)
+        }
+    }, []);
+
+    useEffect(() => {
+        setSocket(io("127.0.0.1:1337"))
+        return () => {
+            if (socket) {
+                socket.disconnect()
+            }
         }
     }, []);
     /**
