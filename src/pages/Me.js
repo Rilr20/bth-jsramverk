@@ -4,7 +4,7 @@ const Me = () => {
 
     useEffect(() => {
         const fetchData = () => {
-            return fetch("https://jsramverk-editor-rilr20a.azurewebsites.net/me")
+            return fetch("http://localhost:1337/me")
                 .then((response) => response.json())
                 .then((data) => setMessage(data.data.msg));
         }

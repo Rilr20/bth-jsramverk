@@ -1,6 +1,6 @@
 const editorData= {
     fetchData: async function (setDocuments) {
-        return fetch("https://jsramverk-editor-rilr20a.azurewebsites.net/docs")
+        return fetch("http://localhost:1337/docs")
             .then((response) => response.json())
             .then((data) => (setDocuments(data.data)));
     }

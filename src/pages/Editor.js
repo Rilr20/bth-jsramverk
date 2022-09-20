@@ -12,18 +12,19 @@ export default function Editor() {
     const [documents, setDocuments] = useState([]);
     const editor = document.getElementsByClassName('textEditor')
     const fileNameInput = document.getElementById('filename')
+    let updateCurrentDocOnChange = false;
     const [formInput, updateFormInput] = useState({_id:null, title: '', text: '' })
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        if (documents.length === 0) {
+        (async () => {
             console.log("run");
-            fetchData(setDocuments)
-        }
+            await fetchData(setDocuments)
+        })();
     }, []);
 
     useEffect(() => {
-        setSocket(io("127.0.0.1:1337"))
+        setSocket(io("http://localhost:1337"))
         return () => {
             if (socket) {
                 socket.disconnect()
@@ -47,7 +48,7 @@ export default function Editor() {
                 body: JSON.stringify(data)
             }
 
-            const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/docs', requestOptions)
+            const response = await fetch('127.0.0.1:1337/docs', requestOptions)
             const body = await response.text()
 
             if (response.status === 201) window.location.reload()
@@ -66,7 +67,7 @@ export default function Editor() {
                 body: JSON.stringify(data)
             }
 
-            const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${formInput._id}`, requestOptions)
+            const response = await fetch(`http://localhost:1337/docs/${formInput._id}`, requestOptions)
             const body = await response.text()
 
             if (response.status === 204) window.location.reload()
@@ -97,7 +98,16 @@ export default function Editor() {
      * @param {string} text 
      */
     function handleChange(html, text) {
-        updateFormInput({ ...formInput, text: text })
+        if (updateCurrentDocOnChange) {
+            const copy = Object.assign({}, formInput);
+
+            copy.text = html;
+
+            updateFormInput(copy);
+        }
+
+        updateCurrentDocOnChange = true;
+        // updateFormInput({ ...formInput, text: text })
     }
 
     return (
