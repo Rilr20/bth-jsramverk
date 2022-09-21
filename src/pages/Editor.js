@@ -6,7 +6,7 @@ import { fetchData } from '../components/editorData';
 import { findId } from '../components/EditorHelper';
 import { io } from "socket.io-client";
 
-let sendToSocket = false;
+// let sendToSocket = false;
 
 export default function Editor() {
     const [documents, setDocuments] = useState([]);
@@ -15,7 +15,7 @@ export default function Editor() {
     let updateCurrentDocOnChange = false;
     const [formInput, updateFormInput] = useState({_id:null, title: '', text: '' })
     const [socket, setSocket] = useState(null);
-
+    // const [documentText, setText] = useState({_id: null, text:"text"})
     useEffect(() => {
         (async () => {
             console.log("run");
@@ -25,12 +25,41 @@ export default function Editor() {
 
     useEffect(() => {
         setSocket(io("http://localhost:1337"))
+
+
         return () => {
             if (socket) {
+                console.log("disconnects");
                 socket.disconnect()
             }
         }
     }, []);
+    useEffect(() => {
+        console.log("socket");
+        if(socket) {
+            socket.on("doc", function (data) {
+                console.log(data);
+                editor[0].innerText = data.text
+            })
+        }
+    }, [socket]);
+
+    useEffect(() => {
+        console.log("tja");
+
+        if (socket) {
+            console.log("socket time");
+            socket.emit("doc", {_id: formInput._id, text: formInput.text})
+        }
+        // if (socket) {
+        //     console.log("socket");
+        //     socket.on("doc", function (data) {
+        //         console.log(data);
+        //         editor[0].innerText = data.text
+        //     })
+        // }
+    }, [formInput]);
+
     /**
      * Saves a new file or to an existing one
      */
@@ -83,6 +112,7 @@ export default function Editor() {
         let document = findId(documents, documentId)
         try {
             updateFormInput({...document})
+            socket.emit("create", documentId);
             console.log(fileNameInput);
             fileNameInput.value = document.title
             editor[0].innerText = document.text
@@ -101,8 +131,7 @@ export default function Editor() {
         if (updateCurrentDocOnChange) {
             const copy = Object.assign({}, formInput);
 
-            copy.text = html;
-
+            copy.text = text;
             updateFormInput(copy);
         }
 
@@ -133,7 +162,7 @@ export default function Editor() {
                 </div>
             </div>
 
-            <TrixEditor onChange={handleChange} name="text" className='textEditor' placeholder='Dags att börja skriva' />
+            <TrixEditor  onChange={handleChange} name="text" className='textEditor' placeholder='Dags att börja skriva' />
             <p>Document id: {formInput._id === null ? "New File" : formInput._id}</p>
             <p>text:{formInput.text}</p>
             <p>title:{formInput.title}</p>
