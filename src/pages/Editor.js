@@ -21,7 +21,7 @@ export default function Editor() {
     }, []);
 
     useEffect(() => {
-        setSocket(io("http://localhost:1337"))
+        setSocket(io("https://jsramverk-editor-rilr20a.azurewebsites.net/"))
 
 
         return () => {
@@ -88,7 +88,7 @@ export default function Editor() {
                 body: JSON.stringify(data)
             }
 
-            const response = await fetch(`http://localhost:1337/docs/${formInput._id}`, requestOptions)
+            const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${formInput._id}`, requestOptions)
             const body = await response.text()
 
             if (response.status === 204) window.location.reload()
