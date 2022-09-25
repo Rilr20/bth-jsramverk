@@ -6,6 +6,11 @@ import { fetchData } from '../components/editorData';
 import { findId } from '../components/EditorHelper';
 import { io } from "socket.io-client";
 
+let sendToSocket = false;
+
+function changeSendToSocket(value) {
+    sendToSocket = value;
+}
 
 export default function Editor() {
     const [documents, setDocuments] = useState([]);
@@ -13,6 +18,7 @@ export default function Editor() {
     const fileNameInput = document.getElementById('filename')
     const [formInput, updateFormInput] = useState({_id:null, title: '', text: '' })
     const [socket, setSocket] = useState(null);
+
     useEffect(() => {
         (async () => {
             console.log("run");
@@ -22,7 +28,6 @@ export default function Editor() {
 
     useEffect(() => {
         setSocket(io("https://jsramverk-editor-rilr20a.azurewebsites.net/"))
-
 
         return () => {
             if (socket) {
@@ -36,6 +41,7 @@ export default function Editor() {
         if(socket) {
             socket.on("doc", function (data) {
                 // console.log(data);
+                changeSendToSocket(false)
                 if (editor[0].innerText !== data.text) {
                     editor[0].innerText = data.text
                 }
@@ -43,13 +49,18 @@ export default function Editor() {
         }
     }, [socket]);
 
-    useEffect(() => {
+    function emitToSocket() {
         console.log("tja");
 
-        if (socket) {
+        if (socket && sendToSocket) {
             // console.log("socket time");
-            socket.emit("doc", {_id: formInput._id, text: formInput.text})
+            socket.emit("doc", { _id: formInput._id, text: formInput.text })
         }
+        changeSendToSocket(true)
+
+    }
+    useEffect(() => {
+        console.log("");
     }, [formInput]);
 
     /**
@@ -69,7 +80,7 @@ export default function Editor() {
                 body: JSON.stringify(data)
             }
 
-            const response = await fetch('127.0.0.1:1337/docs', requestOptions)
+            const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/docs', requestOptions)
             const body = await response.text()
 
             if (response.status === 201) window.location.reload()
@@ -148,8 +159,10 @@ export default function Editor() {
                     </div>
                 </div>
             </div>
+            <div onKeyUp={emitToSocket}>
+                <TrixEditor onChange={handleChange} name="text" className='textEditor' placeholder='Dags att börja skriva' />
 
-            <TrixEditor onChange={handleChange} name="text" className='textEditor' placeholder='Dags att börja skriva' />
+            </div>
             <p>Document id: {formInput._id === null ? "New File" : formInput._id}</p>
             <p>text:{formInput.text}</p>
             <p>title:{formInput.title}</p>
