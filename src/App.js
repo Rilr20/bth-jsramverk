@@ -6,7 +6,7 @@ import Me from './pages/Me'
 import Editor from './pages/Editor';
 import Report from './pages/Report';
 import About from './pages/About';
-import Irc from './pages/Irc';
+import Register from './pages/Register';
 
 function App() {
     return (
@@ -19,7 +19,7 @@ function App() {
                     <Route path="/me" element={<Me />}></Route>
                     <Route path="/about" element={<About />}></Route>
                     <Route path="/report" element={<Report />}></Route>
-                    <Route path="/irc" element={<Irc />}></Route>
+                    <Route path="/register" element={<Register />}></Route>
                 </Routes>
             </div>
         </>

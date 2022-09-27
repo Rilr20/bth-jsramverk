@@ -7,6 +7,7 @@ export default function Navbar() {
             <CustomLink to={"/me"}>Me</CustomLink>
             <CustomLink to={"/about"}>About</CustomLink>
             <CustomLink to={"/report"}>Report</CustomLink>
+            <CustomLink to={"/register"}>Register</CustomLink>
         </div>
     </nav>
 }
