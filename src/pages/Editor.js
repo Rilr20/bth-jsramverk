@@ -5,6 +5,7 @@ import "trix/dist/trix.css";
 import { fetchData } from '../components/editorData';
 import { findId } from '../components/EditorHelper';
 import { io } from "socket.io-client";
+import Permission from '../components/Permission';
 
 let sendToSocket = false;
 
@@ -59,9 +60,6 @@ export default function Editor() {
         changeSendToSocket(true)
 
     }
-    useEffect(() => {
-        console.log("");
-    }, [formInput]);
 
     /**
      * Saves a new file or to an existing one
@@ -159,6 +157,7 @@ export default function Editor() {
                     </div>
                 </div>
             </div>
+            <Permission />
             <div onKeyUp={emitToSocket}>
                 <TrixEditor onChange={handleChange} name="text" className='textEditor' placeholder='Dags att börja skriva' />
 
