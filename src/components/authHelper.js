@@ -4,7 +4,7 @@ const authHelper = {
         console.log("user");
         console.log(user);
     
-        const response = await fetch(`http://localhost:1337/user/register`, {
+        const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/user/register`, {
             method: "POST",
             body: JSON.stringify(user),
             headers: {
@@ -17,7 +17,7 @@ const authHelper = {
     },
     login: async function (user) {
 
-        const response = await fetch(`http://localhost:1337/user/login`, {
+        const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/user/login`, {
             method: "POST",
             body: JSON.stringify(user),
             headers: {
