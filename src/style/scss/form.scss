@@ -49,6 +49,9 @@
         min-width: 100px;
     }
 
+    button:hover {
+        background-color: darken($cultured, 5%);
+    }
     .login {
         background-color: lighten($dodgerblue, 25%);
     }

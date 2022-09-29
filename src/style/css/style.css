@@ -234,6 +234,9 @@ a:visited {
   border-radius: 5px;
   min-width: 100px;
 }
+.input-button button:hover {
+  background-color: #e6dfe0;
+}
 .input-button .login {
   background-color: #8bcdfb;
 }
