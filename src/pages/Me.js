@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-const Me = () => {
+const Me = ({token, setToken}) => {
     const [message, setMessage] = useState('');
-
+    
     useEffect(() => {
         const fetchData = () => {
             return fetch("https://jsramverk-editor-rilr20a.azurewebsites.net/me")
@@ -15,6 +15,7 @@ const Me = () => {
             <h1>Me</h1>
             <h2>Rikard Larsson</h2>
             <p>{message}</p>
+            <p>{token ?"you are logged in" : "you are not logged in"}</p>
         </main>
     );
 };

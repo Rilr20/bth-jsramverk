@@ -20,8 +20,8 @@ export default function Account({token, setToken, email, setEmail}) {
     return (
         <div className='container'>
             <div>
-                <h1>Register or Login</h1>
-                <button onClick={() =>{ setRegister(!register)}}>{!register ? "Register" : "Login"}</button>
+                <h1>Account Page</h1>
+                <button className='button' onClick={() =>{ setRegister(!register)}}>{!register ? "Register" : "Login"}</button>
             </div>
             {register ? <Register onChange={onChange} /> : <Login setToken={setToken} onChange={onChange}/>}
         </div>
