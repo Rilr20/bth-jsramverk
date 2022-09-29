@@ -1,6 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Mohave&display=swap");
 * {
   font-family: "Mohave", sans-serif;
+}
+
+button {
   font-size: 1em;
 }
 
@@ -181,6 +184,69 @@ a:visited {
 .filename-btn:hover,
 .new-document:hover {
   background-color: #9F86C0;
+}
+
+.form-header {
+  text-align: center;
+}
+
+.form {
+  border: 1px solid black;
+  width: 30%;
+  margin: auto;
+  border-radius: 5px;
+  background-color: #eeedf4;
+  padding: 1em;
+}
+
+.form-inputs {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  width: 100%;
+}
+
+.input {
+  margin: auto;
+  display: flex;
+}
+.input label {
+  margin-top: 0.5em;
+  min-width: 100px;
+  display: block;
+  padding-top: 0.4em;
+  text-align: right;
+}
+.input input {
+  margin-top: 0.5em;
+  margin-left: 0.5em;
+  width: 150px;
+  padding: 0.5em;
+}
+
+.input-button {
+  margin: auto;
+}
+.input-button button {
+  margin-top: 0.5em;
+  padding: 0.2em 0.8em;
+  border: 1px solid black;
+  border-radius: 5px;
+  min-width: 100px;
+}
+.input-button .login {
+  background-color: #8bcdfb;
+}
+.input-button .register {
+  background-color: #c7b8da;
+}
+
+.button {
+  margin-top: 0.5em;
+  padding: 0.2em 0.8em;
+  border: 1px solid black;
+  border-radius: 5px;
+  min-width: 100px;
 }
 
 .container {
