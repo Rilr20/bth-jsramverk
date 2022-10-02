@@ -17,7 +17,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
     const [documents, setDocuments] = useState([]);
     const editor = document.getElementsByClassName('textEditor')
     const fileNameInput = document.getElementById('filename')
-    const [formInput, updateFormInput] = useState({ _id: null, title: '', text: '', email: email, code: false })
+    const [formInput, updateFormInput] = useState({ _id: null, title: '', text: '', email: email, code: false, write:true })
     const [socket, setSocket] = useState(null);
     const [useSocket, setUseSocket] = useState(false);
     const [open, setOpen] = useState(false);
@@ -72,10 +72,11 @@ export default function Editor({ token, setToken, email, setEmail }) {
         let title = formInput.title
         let email = formInput.email
         let code = formInput.code
+        let write = formInput.write
         if (formInput._id === null) {
             //spara ny fil
 
-            let data = { title, text, email, code }
+            let data = { title, text, email, code, write }
             let requestOptions = {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
