@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { TrixEditor } from "react-trix";
 import "trix/dist/trix";
 import "trix/dist/trix.css";
-import { fetchData } from '../components/editorData';
+// import { fetchData } from '../components/editorData';
 import { findId } from '../components/EditorHelper';
 import { io } from "socket.io-client";
 import Permission from '../components/Permission';
@@ -119,7 +119,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
             }
 
             const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${formInput._id}`, requestOptions)
-            const body = await response.text()
+            /*const body = */await response.text()
             console.log(response);
             if (response.status === 204) {
                 setOpen(true)

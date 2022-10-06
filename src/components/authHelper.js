@@ -1,4 +1,3 @@
-const baseURL = "127.0.0.1:1337"
 const authHelper = {
     register: async function (user) {
         console.log("user");

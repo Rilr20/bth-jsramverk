@@ -23,7 +23,7 @@ export default function Account({token, setToken, email, setEmail}) {
                 <h1>Account Page</h1>
                 <button className='button' onClick={() =>{ setRegister(!register)}}>{!register ? "Register" : "Login"}</button>
             </div>
-            {register ? <Register onChange={onChange} /> : <Login setToken={setToken} onChange={onChange} setEmail={setEmail} />}
+            {register ? <Register onChange={onChange} /> : <Login setToken={setToken} onChange={onChange} setEmail={setEmail}/>}
         </div>
     )
 }
