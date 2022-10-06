@@ -25,6 +25,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
     useEffect(() => {
         (async () => {
             console.log("run");
+            console.log(email);
             // await fetchData(setDocuments, token)
             const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/graphql', {
                 method: 'POST',
@@ -33,14 +34,10 @@ export default function Editor({ token, setToken, email, setEmail }) {
                     'Accept': 'application/json',
                 },
                 body: JSON.stringify({
-                    query: `{docsbyemail(email:"${email}") { _id
-                        title
-                        text
-                        code
-                        }}` })
+                    query: `{docsbyemail(email:"${email}") { _id text title code }}` })
             });
             const result = await response.json();
-            setDocuments(result.data.docsbyemail)
+            setDocuments(result.data.docsbyemail === null ? [] : result.data.docsbyemail)
         })();
     }, []);// eslint-disable-line react-hooks/exhaustive-deps
 
@@ -181,11 +178,11 @@ export default function Editor({ token, setToken, email, setEmail }) {
                                     <option autoFocus>Switch Between Documents</option>
                                     {
                                         documents.map((document) => {
+                                            console.log(document);
                                             // if (document.email === email) {
                                                 return <option className='existing-document' key={document._id} onClick={() => { changeDocument(document._id) }}>{document.title}</option>
                                             // }
                                         })
-
 
                                     }
                                 </select>
