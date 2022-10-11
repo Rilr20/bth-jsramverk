@@ -6,15 +6,14 @@ import Permission from '../components/Permission';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import jsPDF from "jspdf";
-
-
+import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 let sendToSocket = false;
 
 function changeSendToSocket(value) {
     sendToSocket = value;
 }
 
-export default function Editor({ token, setToken, email, setEmail }) {
+export default function EditorPage({ token, setToken, email, setEmail }) {
     const [documents, setDocuments] = useState([]);
     const editor = document.getElementsByClassName('textEditor')
     const fileNameInput = document.getElementById('filename')
@@ -23,7 +22,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
     const [useSocket, setUseSocket] = useState(false);
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
-
+    token = "s"
     useEffect(() => {
         (async () => {
             console.log("run");
@@ -149,7 +148,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
             console.log(document);
             console.log(document.title);
             setValue(document.text)
-            
+
             // editor[0].dangerouslySetInnerHTML = document.text
 
         } catch (error) {
@@ -165,6 +164,8 @@ export default function Editor({ token, setToken, email, setEmail }) {
      * @param {string} text 
      */
     function handleChange(html, action) {
+        console.log(html);
+        console.log(action);
         setValue(html)
         const copy = Object.assign({}, formInput);
 
@@ -189,6 +190,10 @@ export default function Editor({ token, setToken, email, setEmail }) {
         copy.code = !copy.code;
         updateFormInput(copy);
     }
+    function encodeAndExec() {
+        const encoded = btoa(formInput.text);
+        console.log(encoded);
+    }
     return (
         <div className='container'>
             {token === "" ? <h1>Login to access this page</h1> :
@@ -199,7 +204,10 @@ export default function Editor({ token, setToken, email, setEmail }) {
                                 <input className='filename' id="filename" placeholder='title' name="title" onChange={(e) => { updateFormInput({ ...formInput, title: e.target.value }) }}></input>
                                 <button className='filename-btn' onClick={saveFile}>Save</button>
                                 <button className='filename-btn' onClick={printPDF}>get pdf</button>
+                            </div>
+                            <div>
                                 <button className='filename-btn' onClick={switchmode}>Switch mode</button>
+                                {formInput.code ? <button className='filename-btn' onClick={encodeAndExec}>Exec Code</button> : <></>}
                             </div>
                             <div data-testid="document-list" className='document-list'>
 
@@ -212,7 +220,6 @@ export default function Editor({ token, setToken, email, setEmail }) {
                                             return <option className='existing-document' key={document._id} onClick={() => { changeDocument(document._id) }}>{document.title}</option>
                                             // }
                                         })
-
                                     }
                                 </select>
                                 <button className='new-document' onClick={() => { changeDocument(null) }}>New Document</button>
@@ -221,13 +228,27 @@ export default function Editor({ token, setToken, email, setEmail }) {
                     </div>
                     <Permission />
                     <div onKeyUp={emitToSocket}>
-                        <ReactQuill value={value} onChange={handleChange} name="text" className='textEditor' id='textEditor' placeholder='Dags att börja skriva' />
+                        {formInput.code === true ?<> <Editor
+                            height="250px"
+                            placeholder="Dags att börja koda"
+                            defaultLanguage="javascript"
+                            defaultValue="// Dags att börja koda"
+                            value={value}
+                            theme="vs-dark"
+                            onChange={handleChange}
+                        />
+                        <div className='console'>
+                            <div className='divider'></div>
+                                <p>{}</p>
+                        </div> 
+                        </>: <ReactQuill value={value} onChange={handleChange} name="text" className='textEditor' id='textEditor' placeholder='Dags att börja skriva' />}
+
                     </div>
                     <h1>{open ? "document saved" : ""}</h1>
                     <p>Document id: {formInput._id === null ? "New File" : formInput._id}</p>
                     <p>text:{formInput.text}</p>
                     <p>title:{formInput.title}</p>
-                    <p>Code Mode:{formInput.code === true ? "true" :  "false"}</p>
+                    <p>Code Mode:{formInput.code === true ? "true" : "false"}</p>
                 </>
             }
         </div>
