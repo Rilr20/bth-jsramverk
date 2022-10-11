@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { TrixEditor } from "react-trix";
-import "trix/dist/trix";
-import "trix/dist/trix.css";
 // import { fetchData } from '../components/editorData';
 import { findId } from '../components/EditorHelper';
 import { io } from "socket.io-client";
@@ -185,7 +182,13 @@ export default function Editor({ token, setToken, email, setEmail }) {
             }
         });
     }
+    function switchmode() {
+        console.log(formInput);
+        const copy = Object.assign({}, formInput);
 
+        copy.code = !copy.code;
+        updateFormInput(copy);
+    }
     return (
         <div className='container'>
             {token === "" ? <h1>Login to access this page</h1> :
@@ -196,6 +199,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
                                 <input className='filename' id="filename" placeholder='title' name="title" onChange={(e) => { updateFormInput({ ...formInput, title: e.target.value }) }}></input>
                                 <button className='filename-btn' onClick={saveFile}>Save</button>
                                 <button className='filename-btn' onClick={printPDF}>get pdf</button>
+                                <button className='filename-btn' onClick={switchmode}>Switch mode</button>
                             </div>
                             <div data-testid="document-list" className='document-list'>
 
@@ -223,6 +227,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
                     <p>Document id: {formInput._id === null ? "New File" : formInput._id}</p>
                     <p>text:{formInput.text}</p>
                     <p>title:{formInput.title}</p>
+                    <p>Code Mode:{formInput.code === true ? "true" :  "false"}</p>
                 </>
             }
         </div>
