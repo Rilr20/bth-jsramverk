@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { TrixEditor } from "react-trix";
 import "trix/dist/trix";
 import "trix/dist/trix.css";
-import { fetchData } from '../components/editorData';
+// import { fetchData } from '../components/editorData';
 import { findId } from '../components/EditorHelper';
 import { io } from "socket.io-client";
 import Permission from '../components/Permission';
@@ -17,7 +17,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
     const [documents, setDocuments] = useState([]);
     const editor = document.getElementsByClassName('textEditor')
     const fileNameInput = document.getElementById('filename')
-    const [formInput, updateFormInput] = useState({ _id: null, title: '', text: '', email: email, code: false })
+    const [formInput, updateFormInput] = useState({ _id: null, title: '', text: '', email: email, code: false, write: true })
     const [socket, setSocket] = useState(null);
     const [useSocket, setUseSocket] = useState(false);
     const [open, setOpen] = useState(false);
@@ -25,9 +25,21 @@ export default function Editor({ token, setToken, email, setEmail }) {
     useEffect(() => {
         (async () => {
             console.log("run");
-            await fetchData(setDocuments, token)
+            console.log(email);
+            // await fetchData(setDocuments, token)
+            const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: `{docsbyemail(email:"${email}") { _id text title code }}` })
+            });
+            const result = await response.json();
+            setDocuments(result.data.docsbyemail === null ? [] : result.data.docsbyemail)
         })();
-    }, []);
+    }, []);// eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         setSocket(io(""))
@@ -38,7 +50,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
                 socket.disconnect()
             }
         }
-    }, []);
+    }, []);// eslint-disable-line react-hooks/exhaustive-deps
     useEffect(() => {
         console.log("socket");
         if (socket) {
@@ -50,7 +62,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
                 }
             })
         }
-    }, [socket]);
+    }, [socket]);// eslint-disable-line react-hooks/exhaustive-deps
 
     function emitToSocket() {
         console.log("tja");
@@ -72,10 +84,11 @@ export default function Editor({ token, setToken, email, setEmail }) {
         let title = formInput.title
         let email = formInput.email
         let code = formInput.code
+        let write = formInput.write
         if (formInput._id === null) {
             //spara ny fil
 
-            let data = { title, text, email, code }
+            let data = { title, text, email, code, write }
             let requestOptions = {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -83,7 +96,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
             }
 
             const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/docs', requestOptions)
-            const body = await response.text()
+            /*const body = */await response.text()
             console.log(response);
             if (response.status === 201) {
                 setOpen(true)
@@ -106,7 +119,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
             }
 
             const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${formInput._id}`, requestOptions)
-            const body = await response.text()
+            /*const body = */await response.text()
             console.log(response);
             if (response.status === 204) {
                 setOpen(true)
@@ -149,68 +162,45 @@ export default function Editor({ token, setToken, email, setEmail }) {
         updateFormInput(copy);
     }
 
-    function renderDocs() {
-        let render = []
-        console.log(documents);
-        try {
-
-            documents.forEach(element => {
-                render.push(<option className='existing-document' key={document._id} onClick={() => { changeDocument(document._id) }}>{document.title}</option>)
-            });
-        } catch (error) {
-
-        }
-        return render;
-    }
     return (
         <div className='container'>
-            {token === "" ? <h1>Login to access this page</h1> : 
-            <>
-                <div className='toolbar'>
-                    <div className='tools'>
-                        <div className='document-list'>
-                            <input className='filename' id="filename" placeholder='title' name="title" onChange={(e) => { updateFormInput({ ...formInput, title: e.target.value }) }}></input>
-                            <button className='filename-btn' onClick={saveFile}>Save</button>
-                        </div>
-                        <div data-testid="document-list" className='document-list'>
+            {token === "" ? <h1>Login to access this page</h1> :
+                <>
+                    <div className='toolbar'>
+                        <div className='tools'>
+                            <div className='document-list'>
+                                <input className='filename' id="filename" placeholder='title' name="title" onChange={(e) => { updateFormInput({ ...formInput, title: e.target.value }) }}></input>
+                                <button className='filename-btn' onClick={saveFile}>Save</button>
+                            </div>
+                            <div data-testid="document-list" className='document-list'>
 
-                            <select className='dropdown-documents'>
-                                <option autoFocus>Switch Between Documents</option>
-                                {
-                                    // renderDocs()
-                                    // () => {
-                                    //     console.log("giaasdhglöasdhglköaasdghlökashdg");
-                                    //     try {
-                                    //         documents.map((document) => {
-                                    //             return <option className='existing-document' key={document._id} onClick={() => { changeDocument(document._id) }}>{document.title}</option>
-                                    //         })
-                                    //     } catch (error) {
-                                    //         console.log(error);
-                                    //     }
-                                    // }
-                                    documents.map((document) => {
-                                        if (document.email === email) {
-                                            return <option className='existing-document' key={document._id} onClick={() => { changeDocument(document._id) }}>{document.title}</option>
-                                        }
-                                    })
+                                <select className='dropdown-documents'>
+                                    <option autoFocus>Switch Between Documents</option>
+                                    {
+                                        documents.map((document) => {
+                                            console.log(document);
+                                            // if (document.email === email) {
+                                                return <option className='existing-document' key={document._id} onClick={() => { changeDocument(document._id) }}>{document.title}</option>
+                                            // }
+                                        })
 
-                                }
-                            </select>
-                            <button className='new-document' onClick={() => { changeDocument(null) }}>New Document</button>
+                                    }
+                                </select>
+                                <button className='new-document' onClick={() => { changeDocument(null) }}>New Document</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <Permission />
-                <div onKeyUp={emitToSocket}>
-                    <TrixEditor onChange={handleChange} name="text" className='textEditor' placeholder='Dags att börja skriva' />
+                    <Permission />
+                    <div onKeyUp={emitToSocket}>
+                        <TrixEditor onChange={handleChange} name="text" className='textEditor' placeholder='Dags att börja skriva' />
 
-                </div>
-                <h1>{open ? "document saved" : ""}</h1>
-                <p>Document id: {formInput._id === null ? "New File" : formInput._id}</p>
-                <p>text:{formInput.text}</p>
-                <p>title:{formInput.title}</p>
+                    </div>
+                    <h1>{open ? "document saved" : ""}</h1>
+                    <p>Document id: {formInput._id === null ? "New File" : formInput._id}</p>
+                    <p>text:{formInput.text}</p>
+                    <p>title:{formInput.title}</p>
                 </>
             }
-            </div>
+        </div>
     );
 }

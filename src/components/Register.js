@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import authHelper from './authHelper';
 
 
-export default function Registeraccount({ onChange }) {
+export default function Registeraccount() {
     const [formInput, updateFormInput] = useState({ email: '', password: '' })
     const [open, setOpen] = useState(false);
     function onChange(e) {
