@@ -6,6 +6,10 @@ import "trix/dist/trix.css";
 import { findId } from '../components/EditorHelper';
 import { io } from "socket.io-client";
 import Permission from '../components/Permission';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import jsPDF from "jspdf";
+
 
 let sendToSocket = false;
 
@@ -21,6 +25,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
     const [socket, setSocket] = useState(null);
     const [useSocket, setUseSocket] = useState(false);
     const [open, setOpen] = useState(false);
+    const [value, setValue] = useState("");
 
     useEffect(() => {
         (async () => {
@@ -34,7 +39,8 @@ export default function Editor({ token, setToken, email, setEmail }) {
                     'Accept': 'application/json',
                 },
                 body: JSON.stringify({
-                    query: `{docsbyemail(email:"${email}") { _id text title code }}` })
+                    query: `{docsbyemail(email:"${email}") { _id text title code }}`
+                })
             });
             const result = await response.json();
             setDocuments(result.data.docsbyemail === null ? [] : result.data.docsbyemail)
@@ -136,18 +142,24 @@ export default function Editor({ token, setToken, email, setEmail }) {
     function changeDocument(documentId) {
         updateFormInput({ ...formInput, id: documentId })
         let document = findId(documents, documentId)
+        console.log(document);
         try {
             setUseSocket(true)
             updateFormInput({ ...document })
             socket.emit("create", documentId);
             console.log(fileNameInput);
             fileNameInput.value = document.title
-            editor[0].innerText = document.text
+            console.log(document);
+            console.log(document.title);
+            setValue(document.text)
+            
+            // editor[0].dangerouslySetInnerHTML = document.text
 
         } catch (error) {
             setUseSocket(false)
             fileNameInput.value = null
-            editor[0].innerText = null
+            setValue(null)
+            // editor[0].dangerouslySetInnerHTML = null
         }
     }
     /**
@@ -155,11 +167,23 @@ export default function Editor({ token, setToken, email, setEmail }) {
      * @param {string} html 
      * @param {string} text 
      */
-    function handleChange(html, text) {
+    function handleChange(html, action) {
+        setValue(html)
         const copy = Object.assign({}, formInput);
 
-        copy.text = text;
+        copy.text = html;
         updateFormInput(copy);
+
+    }
+    function printPDF() {
+        const pdf = new jsPDF('p', 'pt', 'a4');;
+        pdf.setFont("helvetica");
+        console.log(formInput);
+        pdf.html(document.querySelector('.ql-editor'), {
+            callback: function (doc) {
+                doc.save(`${fileNameInput.value}.pdf`);
+            }
+        });
     }
 
     return (
@@ -171,6 +195,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
                             <div className='document-list'>
                                 <input className='filename' id="filename" placeholder='title' name="title" onChange={(e) => { updateFormInput({ ...formInput, title: e.target.value }) }}></input>
                                 <button className='filename-btn' onClick={saveFile}>Save</button>
+                                <button className='filename-btn' onClick={printPDF}>get pdf</button>
                             </div>
                             <div data-testid="document-list" className='document-list'>
 
@@ -178,9 +203,9 @@ export default function Editor({ token, setToken, email, setEmail }) {
                                     <option autoFocus>Switch Between Documents</option>
                                     {
                                         documents.map((document) => {
-                                            console.log(document);
+                                            // console.log(document);
                                             // if (document.email === email) {
-                                                return <option className='existing-document' key={document._id} onClick={() => { changeDocument(document._id) }}>{document.title}</option>
+                                            return <option className='existing-document' key={document._id} onClick={() => { changeDocument(document._id) }}>{document.title}</option>
                                             // }
                                         })
 
@@ -192,8 +217,7 @@ export default function Editor({ token, setToken, email, setEmail }) {
                     </div>
                     <Permission />
                     <div onKeyUp={emitToSocket}>
-                        <TrixEditor onChange={handleChange} name="text" className='textEditor' placeholder='Dags att börja skriva' />
-
+                        <ReactQuill value={value} onChange={handleChange} name="text" className='textEditor' id='textEditor' placeholder='Dags att börja skriva' />
                     </div>
                     <h1>{open ? "document saved" : ""}</h1>
                     <p>Document id: {formInput._id === null ? "New File" : formInput._id}</p>
