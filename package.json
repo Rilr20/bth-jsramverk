@@ -7,7 +7,6 @@
     "@monaco-editor/react": "^4.4.6",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^13.5.0",
-    "codemirror-react": "^2.1.0",
     "jest-fetch-mock": "^3.0.3",
     "jspdf": "^2.5.1",
     "react": "^18.2.0",
