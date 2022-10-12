@@ -7,6 +7,8 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import jsPDF from "jspdf";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
+import Console from '../components/Console';
+import { execCode } from '../components/editorData';
 let sendToSocket = false;
 
 function changeSendToSocket(value) {
@@ -22,6 +24,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
     const [useSocket, setUseSocket] = useState(false);
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
+    const [consoleVal, setConsoleVal] = useState("");
     token = "s"
     useEffect(() => {
         (async () => {
@@ -59,8 +62,8 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
             socket.on("doc", function (data) {
                 // console.log(data);
                 changeSendToSocket(false)
-                if (editor[0].innerText !== data.text) {
-                    editor[0].innerText = data.text
+                if (value !== data.text) {
+                    value = data.text
                 }
             })
         }
@@ -81,7 +84,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
      * Saves a new file or to an existing one
      */
     async function saveFile() {
-        console.log(editor[0].innerText)
+        // console.log(editor[0].innerText)
         let text = formInput.text
         let title = formInput.title
         let email = formInput.email
@@ -190,9 +193,10 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
         copy.code = !copy.code;
         updateFormInput(copy);
     }
-    function encodeAndExec() {
+    async function encodeAndExec() {
         const encoded = btoa(formInput.text);
-        console.log(encoded);
+        let res = await execCode(encoded);
+        setConsoleVal(res);
     }
     return (
         <div className='container'>
@@ -237,10 +241,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
                             theme="vs-dark"
                             onChange={handleChange}
                         />
-                        <div className='console'>
-                            <div className='divider'></div>
-                                <p>{}</p>
-                        </div> 
+                        <Console consoleVal={consoleVal} />
                         </>: <ReactQuill value={value} onChange={handleChange} name="text" className='textEditor' id='textEditor' placeholder='Dags att börja skriva' />}
 
                     </div>

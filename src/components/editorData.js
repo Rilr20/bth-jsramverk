@@ -22,8 +22,26 @@ const editorData = {
             .then((response) => response.json())
             .then((data) => (
                 setDocuments(data.data)));
+    },
+    execCode: async function (encoded) {
+        return fetch("https://execjs.emilfolino.se/code", {
+            body: JSON.stringify({code: encoded}),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST'
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (result) {
+                let decodedOutput = atob(result.data);
+                return decodedOutput
+            });
+
     }
 }
 
 export default editorData;
 export const fetchData = editorData.fetchData;
+export const execCode = editorData.execCode;
