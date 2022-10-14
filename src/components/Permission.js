@@ -24,7 +24,7 @@ export default function Permission({ documentId, userEmail, documentTitle }) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             }
-            const response = await fetch('http://localhost:1337/email/send', requestOptions)
+            const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/email/send', requestOptions)
             console.log(response);
             setOpen(true);
             setTimeout(() => setOpen(false), 5000);

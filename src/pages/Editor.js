@@ -9,6 +9,7 @@ import jsPDF from "jspdf";
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 import Console from '../components/Console';
 import { execCode } from '../components/editorData';
+import Comments from '../components/Comments';
 let sendToSocket = false;
 
 function changeSendToSocket(value) {
@@ -25,7 +26,8 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
     const [consoleVal, setConsoleVal] = useState("");
-    token = "s"
+
+
     useEffect(() => {
         (async () => {
             console.log("run");
@@ -200,7 +202,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
     }
     return (
         <div className='container'>
-            {token === "" ? <h1>Login to access this page</h1> :
+            {!token ? <h1>Login to access this page</h1> :
                 <>
                     <div className='toolbar'>
                         <div className='tools'>
@@ -230,26 +232,28 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
                             </div>
                         </div>
                     </div>
-                    <Permission />
-                    <div onKeyUp={emitToSocket}>
-                        {formInput.code === true ?<> <Editor
-                            height="250px"
-                            placeholder="Dags att börja koda"
-                            defaultLanguage="javascript"
-                            defaultValue="// Dags att börja koda"
-                            value={value}
-                            theme="vs-dark"
-                            onChange={handleChange}
-                        />
-                        <Console consoleVal={consoleVal} />
-                        </>: <ReactQuill value={value} onChange={handleChange} name="text" className='textEditor' id='textEditor' placeholder='Dags att börja skriva' />}
-
+                    <Permission userEmail={email} documentId={formInput._id} documentTitle={formInput.title} />
+                    <div className='editor-comment'>
+                        <div className='editor-wrapper' onKeyUp={emitToSocket}>
+                            {formInput.code ? <> <Editor
+                                height="250px"
+                                placeholder="Dags att börja koda"
+                                defaultLanguage="javascript"
+                                defaultValue="// Dags att börja koda"
+                                value={value}
+                                theme="vs-dark"
+                                onChange={handleChange}
+                            />
+                                <Console consoleVal={consoleVal} />
+                            </> : <ReactQuill value={value} onChange={handleChange} name="text" className='textEditor' id='textEditor' placeholder='Dags att börja skriva' />}
+                        </div>
+                        <Comments comments={[0,0,0,0,0,0,0,0,0]} />
                     </div>
                     <h1>{open ? "document saved" : ""}</h1>
                     <p>Document id: {formInput._id === null ? "New File" : formInput._id}</p>
                     <p>text:{formInput.text}</p>
                     <p>title:{formInput.title}</p>
-                    <p>Code Mode:{formInput.code === true ? "true" : "false"}</p>
+                    <p>Code Mode:{formInput.code ? "true" : "false"}</p>
                 </>
             }
         </div>

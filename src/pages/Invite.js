@@ -18,7 +18,7 @@ export default function Invite({ token, setToken, email, setEmail }) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         }
-        let response = await fetch('http://localhost:1337/docs/invite', requestOptions)
+        let response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/docs/invite', requestOptions)
         console.log(response);
         setResponse(response)
         setOpen(true);
