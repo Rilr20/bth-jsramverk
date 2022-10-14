@@ -8,6 +8,7 @@ import Report from './pages/Report';
 import About from './pages/About';
 import Account from './pages/Account';
 import { useState } from 'react';
+import Invite from './pages/Invite';
 
 function App() {
     const [token, setToken] = useState(""); 
@@ -23,6 +24,7 @@ function App() {
                     <Route path="/about" element={<About token={token} setToken={setToken} email={email} setEmail={setEmail} />}></Route>
                     <Route path="/report" element={<Report token={token} setToken={setToken} email={email} setEmail={setEmail} />}></Route>
                     <Route path="/account" element={<Account token={token} setToken={setToken} email={email} setEmail={setEmail} />}></Route>
+                    <Route path="/invite" element={<Invite token={token} setToken={setToken} email={email} setEmail={setEmail} />}></Route>
                 </Routes>
             </div>
         </>
