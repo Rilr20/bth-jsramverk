@@ -8,6 +8,7 @@ export default function Navbar() {
             <CustomLink to={"/about"}>About</CustomLink>
             <CustomLink to={"/report"}>Report</CustomLink>
             <CustomLink to={"/account"}>Account</CustomLink>
+            <CustomLink to={"/invite"}>Invite</CustomLink>
         </div>
     </nav>
 }
