@@ -4,25 +4,33 @@ import { useParams } from 'react-router-dom';
 export default function Invite({ token, setToken, email, setEmail }) {
     const params = useParams();
     const [open, setOpen] = useState(false);
+    const [error, setError] = useState(false);
     const [formInput, setFormInput] = useState({ documentId: "" });
-    const [response, setResponse ] = useState(null);
+    const [response, setResponse] = useState(null);
     console.log(params);
     async function inviteUser() {
-        const data = {
-            documentId: formInput.documentId,
-            email: email,
-            permission: true,
+        let check = parseInt(formInput.documentId, 16);
+        if (check && formInput.length === 24) {
+            console.log("hejhej");
+            const data = {
+                documentId: formInput.documentId,
+                email: email,
+                permission: true,
+            }
+            let requestOptions = {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            }
+            let response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/docs/invite', requestOptions)
+            console.log(response);
+            setResponse(response)
+            setOpen(true);
+            setTimeout(() => setOpen(false), 5000);
+        } else {
+            setError(true);
+            setTimeout(() => setError(false), 5000);
         }
-        let requestOptions = {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        }
-        let response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/docs/invite', requestOptions)
-        console.log(response);
-        setResponse(response)
-        setOpen(true);
-        setTimeout(() => setOpen(false), 5000);
     }
     return (
         <div className='container'>
@@ -39,9 +47,10 @@ export default function Invite({ token, setToken, email, setEmail }) {
                         <div className='input-button'>
                             <button className='register' onClick={inviteUser}>Gain Access</button>
                         </div>
-                    {open ? <p>Jag tror det gick bra status code: {response.status}</p> : <></>}
+                        {open ? <p>Maybe no problem status code: {response.status}</p> : <></>}
+                        {error ? <p>Invalid invite code</p> : <></>}
                     </div>
-        </div>
+                </div>
             }
         </div >
     )
