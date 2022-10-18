@@ -20,18 +20,19 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
     const [documents, setDocuments] = useState([]);
     const editor = document.getElementsByClassName('textEditor')
     const fileNameInput = document.getElementById('filename')
-    const [formInput, updateFormInput] = useState({ _id: null, title: '', text: '', email: email, code: false, write: true })
+    const [formInput, updateFormInput] = useState({ _id: '', title: '', text: '', email: email, code: false, write: true })
     const [socket, setSocket] = useState(null);
     const [useSocket, setUseSocket] = useState(false);
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
     const [consoleVal, setConsoleVal] = useState("");
-
+    const [selectedText, setSelectedText] = useState("");
+    const [innerText, setInnerText] = useState("");
 
     useEffect(() => {
         (async () => {
-            console.log("run");
-            console.log(email);
+            // console.log("run");
+            // console.log(email);
             // await fetchData(setDocuments, token)
             const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/graphql', {
                 method: 'POST',
@@ -44,6 +45,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
                 })
             });
             const result = await response.json();
+            // console.log(result);
             setDocuments(result.data.docsbyemail === null ? [] : result.data.docsbyemail)
         })();
     }, []);// eslint-disable-line react-hooks/exhaustive-deps
@@ -53,7 +55,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
 
         return () => {
             if (socket) {
-                console.log("disconnects");
+                // console.log("disconnects");
                 socket.disconnect()
             }
         }
@@ -75,7 +77,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
         console.log("tja");
 
         if (socket && sendToSocket && useSocket) {
-            console.log("socket time");
+            // console.log("socket time");
             socket.emit("doc", { _id: formInput._id, text: formInput.text })
         }
         changeSendToSocket(true)
@@ -104,7 +106,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
 
             const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/docs', requestOptions)
             /*const body = */await response.text()
-            console.log(response);
+            // console.log(response);
             if (response.status === 201) {
                 setOpen(true)
                 setTimeout(() => setOpen(false), 5000);
@@ -116,9 +118,9 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
         } else {
             //spara över gammal
 
-            console.log(formInput._id);
+            // console.log(formInput._id);
             let data = { title: title, text: text, id: formInput._id }
-            console.log(data);
+            // console.log(data);
             let requestOptions = {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -127,7 +129,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
 
             const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${formInput._id}`, requestOptions)
             /*const body = */await response.text()
-            console.log(response);
+            // console.log(response);
             if (response.status === 204) {
                 setOpen(true)
                 setTimeout(() => setOpen(false), 5000);
@@ -140,23 +142,25 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
      * fetches a document with the id, and updates form and UI 
      * @param {string} documentId 
      */
-    function changeDocument(documentId) {
-        updateFormInput({ ...formInput, id: documentId })
-        let document = findId(documents, documentId)
-        console.log(document);
-        try {
+    async function changeDocument(documentId) {
+        // updateFormInput({ ...formInput, _id: documentId })
+        let document = await findId(documents, documentId)
+        // console.log(document);
+        if( documentId) {
             setUseSocket(true)
             updateFormInput({ ...document })
             socket.emit("create", documentId);
-            console.log(fileNameInput);
-            fileNameInput.value = document.title
-            console.log(document);
+            setSelectedText([0, 0])
+            // console.log(fileNameInput);
             console.log(document.title);
+            fileNameInput.value = document.title
+            // console.log(document);
+            // console.log(document.title);
+            
             setValue(document.text)
-
             // editor[0].dangerouslySetInnerHTML = document.text
 
-        } catch (error) {
+        } else {
             setUseSocket(false)
             fileNameInput.value = null
             setValue(null)
@@ -169,19 +173,19 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
      * @param {string} text 
      */
     function handleChange(html, action) {
-        console.log(html);
-        console.log(action);
+        // console.log(html);
+        // console.log(action);
         setValue(html)
+        // console.log(formInput);
         const copy = Object.assign({}, formInput);
-
-        copy.text = html;
+        // console.log(copy);
         updateFormInput(copy);
-
+        setInnerText(editor[0].innerText)
     }
     function printPDF() {
         const pdf = new jsPDF('p', 'pt', 'a4');;
         pdf.setFont("helvetica");
-        console.log(formInput);
+        // console.log(formInput);
         pdf.html(document.querySelector('.ql-editor'), {
             callback: function (doc) {
                 doc.save(`${fileNameInput.value}.pdf`);
@@ -199,6 +203,12 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
         const encoded = btoa(formInput.text);
         let res = await execCode(encoded);
         setConsoleVal(res);
+    }
+    function handleMouseUp() {
+        const string = editor[0].innerText;
+        const substr = window.getSelection().toString();
+
+        setSelectedText([string.indexOf(substr) - 1, string.indexOf(substr) + substr.length - 1]);
     }
     return (
         <div className='container'>
@@ -234,8 +244,8 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
                     </div>
                     <Permission userEmail={email} documentId={formInput._id} documentTitle={formInput.title} />
                     <div className='editor-comment'>
-                        <div className='editor-wrapper' onKeyUp={emitToSocket}>
-                            {formInput.code ? <> <Editor
+                        <div className='editor-wrapper' onKeyUp={emitToSocket} onMouseUp={handleMouseUp}>
+                            {formInput.code ? <> <Editor //code editor
                                 height="250px"
                                 placeholder="Dags att börja koda"
                                 defaultLanguage="javascript"
@@ -245,15 +255,18 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
                                 onChange={handleChange}
                             />
                                 <Console consoleVal={consoleVal} />
-                            </> : <ReactQuill value={value} onChange={handleChange} name="text" className='textEditor' id='textEditor' placeholder='Dags att börja skriva' />}
+                            </> : /*text editor*/
+                            <ReactQuill value={value} onChange={handleChange} name="text" className='textEditor' id='textEditor' placeholder='Dags att börja skriva' />}
                         </div>
-                        <Comments comments={[0,0,0,0,0,0,0,0,0]} />
+                        <Comments documentId={formInput._id} documentText={formInput.text} selectedText={selectedText} email={email} innerText={innerText} />
                     </div>
                     <h1>{open ? "document saved" : ""}</h1>
-                    <p>Document id: {formInput._id === null ? "New File" : formInput._id}</p>
+                    <p>Document id: {!formInput._id ? "New File" : formInput._id}</p>
                     <p>text:{formInput.text}</p>
+                    {/* <p>text:{console.log(formInput)}</p> */}
                     <p>title:{formInput.title}</p>
                     <p>Code Mode:{formInput.code ? "true" : "false"}</p>
+                    <p>Code Mode:{innerText}</p>
                 </>
             }
         </div>
