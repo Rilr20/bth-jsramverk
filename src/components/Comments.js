@@ -24,16 +24,36 @@ export default function Comments({ documentId, documentText, selectedText, email
      */
     const [comments, setComments] = useState([]);
     const [commentText, setCommentText] = useState("");
+    const [open, setOpen] = useState(false);
+    const [errorText, setErrorText] = useState('');
+    // const [writtenText, setWrittenText] = useState('');
+
     useEffect(() => {
+        // console.log(documentId);
+        // console.log(innerText);
         (async () => {
+            // setTimeout(() => setWrittenText(""), 50);
+
             // console.log("run");
             // console.log(documentId);
             // await fetchData(setDocuments, token)
             // if (documentId) {
-            updateCommentList()
+            await updateCommentList()
+
             // }
         })();
-    }, [documentId]);// eslint-disable-line react-hooks/exhaustive-deps
+        // console.log(innerText);
+
+
+        }, [documentId]);// eslint-disable-line react-hooks/exhaustive-deps
+        
+        // useEffect(() => {
+        //     // if(innerText !== "" && writtenText === "") {
+        //     //     console.log("tja");
+        //     //     const string = innerText
+        //     //     // setTimeout(() => setWrittenText(string), 50);
+        //     // }
+        // }, [innerText]);
     async function updateCommentList() {
         const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/graphql', {
             method: 'POST',
@@ -56,6 +76,7 @@ export default function Comments({ documentId, documentText, selectedText, email
             })
         });
         const result = await response.json();
+        // console.log(result.data.commentsByDocId);
         setComments(result.data.commentsByDocId)
     }
     function unixToDate(timeStamp) {
@@ -81,7 +102,7 @@ export default function Comments({ documentId, documentText, selectedText, email
     }
     async function createComment() {
         // console.log(selectedText.length !== 0);
-        if (selectedText[1] !== -1 && selectedText.length === 2) {
+        if (selectedText[1] > 0 && selectedText.length === 2 && !document) {
             const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/graphql', {
                 method: 'POST',
                 headers: {
@@ -95,6 +116,10 @@ export default function Comments({ documentId, documentText, selectedText, email
                 })
             });
             await updateCommentList();
+        } else {
+            setErrorText('No text selected or document id was not found');
+            setOpen(true);
+            setTimeout(() => setOpen(false), 5000);
         }
     }
     function handleOnChange(e) {
@@ -108,19 +133,21 @@ export default function Comments({ documentId, documentText, selectedText, email
                 <input onChange={handleOnChange}></input>
                 {/* <textarea style={{ width: "100%", resize: "none" }} value={selectedText}></textarea> */}
             </div>
+            <p>{open ? errorText : ""}</p>
             <div className='comment-section'>
                 {
                     comments.map((comment) => {
-                        return <div className='comment'>
+                        // console.log(comments);
+                        return <div className='comment' key={comment._id}>
                             <div style={{ display: "flex", }}>
-                                <p className='comment-text' style={{ marginTop: "0.26em;" }}>{unixToDate(comment.date)}</p>
+                                <p className='comment-text' style={{ marginTop: "0.26em" }}>{unixToDate(comment.date)}</p>
                                 <button style={{ marginLeft: "1em", height: "25px" }} onClick={() => { deleteComment(comment._id) }}>Delete</button>
                             </div>
                             <p className='comment-text'>User: {comment.email}</p>
                             {/* <p>{innerText}</p> */}
                             {/* <p>{innerText}</p> */}
-                            <p>{comment.startpos}</p>
-                            <p>{comment.endpos}</p>
+                            {/* <p>{comment.startpos}</p> */}
+                            {/* <p>{comment.endpos}</p> */}
                             {/* {console.log(innerText.substr(comment.startpos, comment.endpos) + " arg")} */}
                             <p className='comment-text'>Selected text: {innerText.substr(comment.startpos, comment.endpos)}</p>
                             <p className='comment-text'>Comment: {comment.text}</p>
