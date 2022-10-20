@@ -50,15 +50,17 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
         })();
     }, []);// eslint-disable-line react-hooks/exhaustive-deps
 
+    
     useEffect(() => {
-        setSocket(io(""))
+        console.log("tja mannen");
+        setSocket(io("https://jsramverk-editor-rilr20a.azurewebsites.net/"))
 
-        return () => {
+        // return () => {
             if (socket) {
-                // console.log("disconnects");
+                console.log("disconnects");
                 socket.disconnect()
             }
-        }
+        // }
     }, []);// eslint-disable-line react-hooks/exhaustive-deps
     useEffect(() => {
         console.log("socket");
@@ -67,7 +69,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
                 // console.log(data);
                 changeSendToSocket(false)
                 if (value !== data.text) {
-                    value = data.text
+                    setValue(data.text)
                 }
             })
         }
@@ -75,9 +77,11 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
 
     function emitToSocket() {
         console.log("tja");
-
+        // console.log(socket !== null);
+        // console.log(sendToSocket);
+        // console.log(useSocket);
         if (socket && sendToSocket && useSocket) {
-            // console.log("socket time");
+            console.log("socket time");
             socket.emit("doc", { _id: formInput._id, text: formInput.text })
         }
         changeSendToSocket(true)
@@ -94,7 +98,8 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
         let email = formInput.email
         let code = formInput.code
         let write = formInput.write
-        if (formInput._id === null) {
+        // console.log(formInput._id);
+        if (!formInput._id) {
             //spara ny fil
 
             let data = { title, text, email, code, write }
@@ -146,24 +151,31 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
         // updateFormInput({ ...formInput, _id: documentId })
         let document = await findId(documents, documentId)
         // console.log(document);
-        if( documentId) {
+        if (documentId) {
             setUseSocket(true)
+            console.log(document);
             updateFormInput({ ...document })
             socket.emit("create", documentId);
             setSelectedText([0, 0])
             // console.log(fileNameInput);
-            console.log(document.title);
+            // console.log(document.title);
             fileNameInput.value = document.title
             // console.log(document);
             // console.log(document.title);
-            
             setValue(document.text)
+            setTimeout(() => setInnerText(editor[0].innerText), 50);
+
             // editor[0].dangerouslySetInnerHTML = document.text
 
         } else {
+            setInnerText(editor[0].innerText);
+            setTimeout(() => updateFormInput({ _id: '', title: '', text: '', email: email, code: false, write: true }), 50);
+            // updateFormInput({ _id: '', title: '', text: '', email: email, code: false, write: true });
+            console.log("else selselselse");
             setUseSocket(false)
             fileNameInput.value = null
             setValue(null)
+
             // editor[0].dangerouslySetInnerHTML = null
         }
     }
@@ -176,9 +188,11 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
         // console.log(html);
         // console.log(action);
         setValue(html)
-        // console.log(formInput);
+        console.log(formInput);
         const copy = Object.assign({}, formInput);
+        console.log(copy);
         // console.log(copy);
+        copy.text = html;
         updateFormInput(copy);
         setInnerText(editor[0].innerText)
     }
@@ -208,7 +222,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
         const string = editor[0].innerText;
         const substr = window.getSelection().toString();
 
-        setSelectedText([string.indexOf(substr) - 1, string.indexOf(substr) + substr.length - 1]);
+        setSelectedText([string.indexOf(substr), string.indexOf(substr) + substr.length - 1]);
     }
     return (
         <div className='container'>
@@ -256,7 +270,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
                             />
                                 <Console consoleVal={consoleVal} />
                             </> : /*text editor*/
-                            <ReactQuill value={value} onChange={handleChange} name="text" className='textEditor' id='textEditor' placeholder='Dags att börja skriva' />}
+                                <ReactQuill value={value} onChange={handleChange} name="text" className='textEditor' id='textEditor' placeholder='Dags att börja skriva' />}
                         </div>
                         <Comments documentId={formInput._id} documentText={formInput.text} selectedText={selectedText} email={email} innerText={innerText} />
                     </div>
