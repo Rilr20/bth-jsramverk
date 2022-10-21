@@ -9,7 +9,7 @@ export default function Registeraccount() {
         let newObject = {};
         newObject[e.target.name] = e.target.value;
 
-        console.log(newObject);
+        // console.log(newObject);
         updateFormInput({ ...formInput, ...newObject });
     };
     async function registerButton() {

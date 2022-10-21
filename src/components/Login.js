@@ -8,7 +8,7 @@ export default function Login({ setToken, setEmail }) {
         let newObject = {};
         newObject[e.target.name] = e.target.value;
 
-        console.log(newObject);
+        // console.log(newObject);
         updateFormInput({ ...formInput, ...newObject });
     };
     async function loginButton() {
