@@ -10,6 +10,7 @@ import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 import Console from '../components/Console';
 import { execCode } from '../components/editorData';
 import Comments from '../components/Comments';
+import html2canvas from 'html2canvas';
 let sendToSocket = false;
 
 function changeSendToSocket(value) {
@@ -17,10 +18,13 @@ function changeSendToSocket(value) {
 }
 
 export default function EditorPage({ token, setToken, email, setEmail }) {
+    window.html2canvas = html2canvas;
     const [documents, setDocuments] = useState([]);
     const editor = document.getElementsByClassName('textEditor')
     const fileNameInput = document.getElementById('filename')
     const [formInput, updateFormInput] = useState({ _id: '', title: '', text: '', email: email, code: false, write: true })
+    const [documentId, setdocumentId] = useState("");
+    const [documentTitle, setDocumentTitle] = useState("");
     const [socket, setSocket] = useState(null);
     const [useSocket, setUseSocket] = useState(false);
     const [open, setOpen] = useState(false);
@@ -94,12 +98,12 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
     async function saveFile() {
         // console.log(editor[0].innerText)
         let text = formInput.text
-        let title = formInput.title
+        let title = fileNameInput.value
         let email = formInput.email
         let code = formInput.code
         let write = formInput.write
         // console.log(formInput._id);
-        if (!formInput._id) {
+        if (!documentId) {
             //spara ny fil
 
             let data = { title, text, email, code, write }
@@ -124,7 +128,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
             //spara över gammal
 
             // console.log(formInput._id);
-            let data = { title: title, text: text, id: formInput._id }
+            let data = { title: title, text: text, id: documentId }
             // console.log(data);
             let requestOptions = {
                 method: "PUT",
@@ -132,7 +136,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
                 body: JSON.stringify(data)
             }
 
-            const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${formInput._id}`, requestOptions)
+            const response = await fetch(`https://jsramverk-editor-rilr20a.azurewebsites.net/docs/${documentId}`, requestOptions)
             /*const body = */await response.text()
             // console.log(response);
             if (response.status === 204) {
@@ -155,6 +159,8 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
             setUseSocket(true)
             console.log(document);
             updateFormInput({ ...document })
+            setdocumentId(document._id);
+            setDocumentTitle(document.title);
             socket.emit("create", documentId);
             setSelectedText([0, 0])
             // console.log(fileNameInput);
@@ -163,7 +169,8 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
             // console.log(document);
             // console.log(document.title);
             setValue(document.text)
-            setTimeout(() => setInnerText(editor[0].innerText), 50);
+            // setTimeout(() => setInnerText(editor[0].innerText), 10);
+            setInnerText(editor[0].innerText)
 
             // editor[0].dangerouslySetInnerHTML = document.text
 
@@ -173,6 +180,8 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
             // updateFormInput({ _id: '', title: '', text: '', email: email, code: false, write: true });
             console.log("else selselselse");
             setUseSocket(false)
+            setdocumentId('');
+            setDocumentTitle('');
             fileNameInput.value = null
             setValue(null)
 
@@ -197,14 +206,29 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
         setInnerText(editor[0].innerText)
     }
     function printPDF() {
-        const pdf = new jsPDF('p', 'pt', 'a4');;
-        pdf.setFont("helvetica");
-        // console.log(formInput);
-        pdf.html(document.querySelector('.ql-editor'), {
-            callback: function (doc) {
-                doc.save(`${fileNameInput.value}.pdf`);
-            }
-        });
+        window["html2canvas"] = html2canvas;
+        const doc = new jsPDF({ unit: 'pt' }) // create jsPDF object
+        const pdfElement = document.getElementsByClassName('ql-editor')[0] // HTML element to be converted to PDF
+        console.log(pdfElement);
+        doc.html(pdfElement, {
+            callback: (pdf) => {
+                pdf.save(documentTitle)
+            },
+            margin: 32, // optional: page margin
+            // optional: other HTMLOptions
+        })
+        // console.log(value);
+        // var doc = new jsPDF()
+        // doc.fromHTML(value)
+        // doc.save('a4.pdf') 
+        // const pdf = new jsPDF('p', 'pt', 'a4');;
+        // pdf.setFont("helvetica");
+        // // console.log(formInput);
+        // pdf.html(document.querySelector('.ql-editor'), {
+        //     callback: function (doc) {
+        //         doc.save(`${fileNameInput.value}.pdf`);
+        //     }
+        // });
     }
     function switchmode() {
         console.log(formInput);
@@ -256,7 +280,7 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
                             </div>
                         </div>
                     </div>
-                    <Permission userEmail={email} documentId={formInput._id} documentTitle={formInput.title} />
+                    <Permission userEmail={email} documentId={documentId} documentTitle={documentTitle} />
                     <div className='editor-comment'>
                         <div className='editor-wrapper' onKeyUp={emitToSocket} onMouseUp={handleMouseUp}>
                             {formInput.code ? <> <Editor //code editor
@@ -272,13 +296,13 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
                             </> : /*text editor*/
                                 <ReactQuill value={value} onChange={handleChange} name="text" className='textEditor' id='textEditor' placeholder='Dags att börja skriva' />}
                         </div>
-                        <Comments documentId={formInput._id} documentText={formInput.text} selectedText={selectedText} email={email} innerText={innerText} />
+                        <Comments documentId={documentId} documentText={formInput.text} selectedText={selectedText} email={email} innerText={innerText} />
                     </div>
                     <h1>{open ? "document saved" : ""}</h1>
-                    <p>Document id: {!formInput._id ? "New File" : formInput._id}</p>
+                    <p>Document id: {!documentId ? "New File" : documentId}</p>
                     <p>text:{formInput.text}</p>
                     {/* <p>text:{console.log(formInput)}</p> */}
-                    <p>title:{formInput.title}</p>
+                    <p>title:{documentTitle}</p>
                     <p>Code Mode:{formInput.code ? "true" : "false"}</p>
                     <p>Code Mode:{innerText}</p>
                 </>
