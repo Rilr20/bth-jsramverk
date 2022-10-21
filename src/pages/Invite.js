@@ -7,10 +7,11 @@ export default function Invite({ token, setToken, email, setEmail }) {
     const [error, setError] = useState(false);
     const [formInput, setFormInput] = useState({ documentId: "" });
     const [response, setResponse] = useState(null);
-    console.log(params);
+
     async function inviteUser() {
         let check = parseInt(formInput.documentId, 16);
-        if (check && formInput.length === 24) {
+
+        if (typeof(check) === "number" && !isNaN(check) && formInput.documentId.length === 24) {
             console.log("hejhej");
             const data = {
                 documentId: formInput.documentId,
@@ -47,7 +48,7 @@ export default function Invite({ token, setToken, email, setEmail }) {
                         <div className='input-button'>
                             <button className='register' onClick={inviteUser}>Gain Access</button>
                         </div>
-                        {open ? <p>Maybe no problem status code: {response.status}</p> : <></>}
+                        {open ? <p>Status code: {response.status} {response.statusText}</p> : <></>}
                         {error ? <p>Invalid invite code</p> : <></>}
                     </div>
                 </div>
