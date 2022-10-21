@@ -101,8 +101,12 @@ export default function Comments({ documentId, documentText, selectedText, email
         return "this"
     }
     async function createComment() {
+        console.log("tja tja tja");
         // console.log(selectedText.length !== 0);
-        if (selectedText[1] > 0 && selectedText.length === 2 && !document) {
+        // console.log(selectedText[1] > 0);
+        // console.log(selectedText.length === 2);
+        // console.log(selectedText[1] > 0 && selectedText.length === 2 && documentId);
+        if (selectedText[1] > 0 && selectedText.length === 2 && documentId) {
             const response = await fetch('https://jsramverk-editor-rilr20a.azurewebsites.net/graphql', {
                 method: 'POST',
                 headers: {
@@ -115,6 +119,7 @@ export default function Comments({ documentId, documentText, selectedText, email
                     }`
                 })
             });
+            console.log(response);
             await updateCommentList();
         } else {
             setErrorText('No text selected or document id was not found');
