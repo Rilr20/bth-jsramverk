@@ -154,7 +154,8 @@ export default function Comments({ documentId, documentText, selectedText, email
                             {/* <p>{comment.startpos}</p> */}
                             {/* <p>{comment.endpos}</p> */}
                             {/* {console.log(innerText.substr(comment.startpos, comment.endpos) + " arg")} */}
-                            <p className='comment-text'>Selected text: {innerText.substr(comment.startpos, comment.endpos)}</p>
+                            <p className='comment-text'>Selected text: {innerText.substr(comment.startpos, comment.endpos - comment.startpos + 1)}</p>
+                            <p className='comment-text'>From character {comment.startpos} to {comment.endpos}</p>
                             <p className='comment-text'>Comment: {comment.text}</p>
                         </div>
                     })
