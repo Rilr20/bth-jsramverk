@@ -169,8 +169,8 @@ export default function EditorPage({ token, setToken, email, setEmail }) {
             // console.log(document);
             // console.log(document.title);
             setValue(document.text)
-            // setTimeout(() => setInnerText(editor[0].innerText), 10);
-            setInnerText(editor[0].innerText)
+            setTimeout(() => setInnerText(editor[0].innerText), 50);
+            // setInnerText(editor[0].innerText)
 
             // editor[0].dangerouslySetInnerHTML = document.text
 
